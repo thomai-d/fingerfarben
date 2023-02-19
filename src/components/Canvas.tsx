@@ -21,6 +21,7 @@ const ColorButton: React.FC<ColorButtonProps> = ({ color, onClick }) => (
 export const Canvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const touchesRef = useRef<Map<number, Touch>>(new Map());
+  const mouseRef = useRef<MouseEvent | null>(null)
   const [color, setColor] = useState('#000000');
 
   useEffect(() => {
@@ -29,13 +30,13 @@ export const Canvas: React.FC = () => {
 
     if (canvas && context) {
       const resizeCanvas = () => {
-        let temp = context.getImageData(0,0,canvas.width, canvas.height)
+        let temp = context.getImageData(0, 0, canvas.width, canvas.height)
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        context.putImageData(temp,0,0)
+        context.putImageData(temp, 0, 0)
       };
 
-      const drawLine = (start: Touch, end: Touch) => {
+      const drawLine = (start: { x: number, y: number }, end: { x: number, y: number }) => {
         context.lineWidth = 8
         context.beginPath();
         context.moveTo(start.x, start.y);
@@ -43,6 +44,23 @@ export const Canvas: React.FC = () => {
         context.strokeStyle = color;
         context.stroke();
       };
+
+      const handleMouseDown = (event: MouseEvent) => {
+        mouseRef.current = event
+      }
+
+      const handleMouseMove = (event: MouseEvent) => {
+        if (!mouseRef.current) {
+          return;
+        }
+
+        drawLine({ x: mouseRef.current.clientX, y: mouseRef.current.clientY }, { x: event.clientX, y: event.clientY })
+        mouseRef.current = event
+      }
+
+      const handleMouseUp = (event: MouseEvent) => {
+        mouseRef.current = null
+      }
 
       const handleTouchStart = (event: TouchEvent) => {
         event.preventDefault();
@@ -86,6 +104,9 @@ export const Canvas: React.FC = () => {
       canvas.addEventListener('touchmove', handleTouchMove);
       canvas.addEventListener('touchend', handleTouchEnd);
       canvas.addEventListener('touchcancel', handleTouchEnd);
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseup', handleMouseUp);
 
       return () => {
         window.removeEventListener('resize', resizeCanvas);
@@ -93,6 +114,9 @@ export const Canvas: React.FC = () => {
         canvas.removeEventListener('touchmove', handleTouchMove);
         canvas.removeEventListener('touchend', handleTouchEnd);
         canvas.removeEventListener('touchcancel', handleTouchEnd);
+        canvas.removeEventListener('mousedown', handleMouseDown);
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseup', handleMouseUp);
       };
     }
   }, [color]);
@@ -107,10 +131,10 @@ export const Canvas: React.FC = () => {
     <>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
 
-      <div style={{position: 'absolute', top: 0, left: 0, zIndex: 1}}>
-      {colors.map((color, index) => (
-        <ColorButton key={index} color={color} onClick={() => handleColorChange(color)} />
-      ))}
+      <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
+        {colors.map((color, index) => (
+          <ColorButton key={index} color={color} onClick={() => handleColorChange(color)} />
+        ))}
       </div>
     </>
   )
