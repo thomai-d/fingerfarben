@@ -1,45 +1,117 @@
-import { TouchEvent, useEffect, useRef } from 'react'
-import { useResizeObserver } from '../hooks/useResizeObserver'
+import React, { useRef, useEffect, useState } from 'react';
 
-export const Canvas = () => {
+type Touch = {
+  id: number;
+  x: number;
+  y: number;
+};
 
-  const canvas = useRef<HTMLCanvasElement>(null)
-  const container = useRef<HTMLDivElement>(null)
-  const context = useRef<CanvasRenderingContext2D | null>(null)
+type ColorButtonProps = {
+  color: string;
+  onClick: () => void;
+};
 
-  const {width, height} = useResizeObserver(container)
+const ColorButton: React.FC<ColorButtonProps> = ({ color, onClick }) => (
+  <button
+    style={{ backgroundColor: color, width: '70px', height: '70px', borderRadius: '50%', margin: '5px' }}
+    onClick={onClick}
+  />
+);
+
+export const Canvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const touchesRef = useRef<Map<number, Touch>>(new Map());
+  const [color, setColor] = useState('#000000');
 
   useEffect(() => {
-    if (!canvas.current)
-      return;
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
 
-    const ctx = canvas.current.getContext('2d')!
-    ctx.fillStyle = 'white'
-    context.current = ctx
-  })
+    if (canvas && context) {
+      const resizeCanvas = () => {
+        let temp = context.getImageData(0,0,canvas.width, canvas.height)
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        context.putImageData(temp,0,0)
+      };
 
-  const onStart = (e: TouchEvent) => {
-    const ctx = context.current!
-    for (let i = 0; i < e.targetTouches.length; i++) {
-      const touch = e.targetTouches.item(i)
-      ctx.fillRect(touch.clientX - 10, touch.clientY - 10, 20, 20)
+      const drawLine = (start: Touch, end: Touch) => {
+        context.lineWidth = 8
+        context.beginPath();
+        context.moveTo(start.x, start.y);
+        context.lineTo(end.x, end.y);
+        context.strokeStyle = color;
+        context.stroke();
+      };
+
+      const handleTouchStart = (event: TouchEvent) => {
+        event.preventDefault();
+        const newTouches = Array.from(event.changedTouches).map(touch => ({
+          id: touch.identifier,
+          x: touch.clientX,
+          y: touch.clientY,
+        }));
+        newTouches.forEach(touch => {
+          touchesRef.current.set(touch.id, touch);
+        });
+      };
+
+      const handleTouchMove = (event: TouchEvent) => {
+        event.preventDefault();
+        const updatedTouches = Array.from(event.changedTouches).map(touch => ({
+          id: touch.identifier,
+          x: touch.clientX,
+          y: touch.clientY,
+        }));
+        updatedTouches.forEach(updatedTouch => {
+          const previousTouch = touchesRef.current.get(updatedTouch.id);
+          if (previousTouch) {
+            drawLine(previousTouch, updatedTouch);
+          }
+          touchesRef.current.set(updatedTouch.id, updatedTouch);
+        });
+      };
+
+      const handleTouchEnd = (event: TouchEvent) => {
+        event.preventDefault();
+        const endedTouches = Array.from(event.changedTouches).map(touch => touch.identifier);
+        endedTouches.forEach(id => {
+          touchesRef.current.delete(id);
+        });
+      };
+
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      canvas.addEventListener('touchstart', handleTouchStart);
+      canvas.addEventListener('touchmove', handleTouchMove);
+      canvas.addEventListener('touchend', handleTouchEnd);
+      canvas.addEventListener('touchcancel', handleTouchEnd);
+
+      return () => {
+        window.removeEventListener('resize', resizeCanvas);
+        canvas.removeEventListener('touchstart', handleTouchStart);
+        canvas.removeEventListener('touchmove', handleTouchMove);
+        canvas.removeEventListener('touchend', handleTouchEnd);
+        canvas.removeEventListener('touchcancel', handleTouchEnd);
+      };
     }
-  }
-  const onMove = (e: TouchEvent) => {
-    const ctx = context.current!
-    for (let i = 0; i < e.targetTouches.length; i++) {
-      const touch = e.targetTouches.item(i)
-      ctx.fillRect(touch.clientX - 10, touch.clientY - 10, 20, 20)
-    }
-  }
-  const onEnd = () => {
-  }
-  
-  console.log(width, height)
+  }, [color]);
+
+  const handleColorChange = (newColor: string) => {
+    setColor(newColor);
+  };
+
+  const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#C0C0C0', '#808080', '#FFFFFF'];
 
   return (
-    <div id="container" ref={container} onTouchStart={onStart} onTouchMove={onMove}>
-      <canvas ref={canvas} width={width} height={height} />
-    </div>
+    <>
+      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+
+      <div style={{position: 'absolute', top: 0, left: 0, zIndex: 1}}>
+      {colors.map((color, index) => (
+        <ColorButton key={index} color={color} onClick={() => handleColorChange(color)} />
+      ))}
+      </div>
+    </>
   )
 }
