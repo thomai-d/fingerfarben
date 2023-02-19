@@ -14,6 +14,10 @@ export class Canvas {
     console.debug("Initialized canvas")
   }
 
+  setColor(color: string) {
+    this.color = color
+  }
+
   resize(width: number, height: number) {
     console.debug(`Resizing canvas to ${width}x${height}`)
 
