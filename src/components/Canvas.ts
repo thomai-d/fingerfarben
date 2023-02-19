@@ -52,6 +52,11 @@ export class Canvas {
     this.context.lineTo(end.x, end.y);
     this.context.strokeStyle = this.color;
     this.context.stroke();
+
+    this.context.beginPath();
+    this.context.ellipse(end.x, end.y, 4, 4, 0, 0, 2 * Math.PI)
+    this.context.fillStyle = this.color;
+    this.context.fill();
   };
 
   onTouchStart = (event: TouchEvent) => {
