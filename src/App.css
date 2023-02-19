@@ -1,3 +1,4 @@
-canvas {
-    /* background-color: black; */
+#root {
+    display: flex;
+    flex-direction: column;
 }

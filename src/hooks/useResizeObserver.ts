@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from 'react';
 
 // THX. ChatGPT :)
 
-export const useResizeObserver = (ref: RefObject<HTMLElement>) => {
+export const useResizeObserver = (ref: RefObject<HTMLElement>, onChanged?: (width: number, height: number) => void) => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -13,6 +13,7 @@ export const useResizeObserver = (ref: RefObject<HTMLElement>) => {
         const { width, height } = entry.contentRect;
         // Update our state with the new dimensions
         setDimensions({ width, height });
+        onChanged?.(width, height)
       }
     });
 
