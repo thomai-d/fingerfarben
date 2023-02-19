@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import './App.css'
+import { ColorSelection } from './components/ColorSelection'
 import { ResizableCanvas } from './components/ResizableCanvas'
 
 export default () => {
-  const [x, setx] = useState(0)
+  const [color, setColor] = useState('white')
   return (
     <>
-      <button onClick={() => setx(x => x + 1)}>{x}</button>
-      <ResizableCanvas />
+      <ColorSelection onSelectColor={setColor} />
+      <ResizableCanvas color={color} />
     </>
   )
 }

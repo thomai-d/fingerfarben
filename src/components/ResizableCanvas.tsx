@@ -2,7 +2,11 @@ import { memo, useEffect, useRef } from "react"
 import { useResizeObserver } from "../hooks/useResizeObserver"
 import { Canvas } from './Canvas'
 
-export const ResizableCanvas = memo(() => {
+type Props = {
+  color: string
+}
+
+export const ResizableCanvas = memo(({ color }: Props) => {
   const divRef = useRef<HTMLDivElement>(null)
   const canvasElemRef = useRef<HTMLCanvasElement>(null)
   const canvasRef = useRef<Canvas | null>(null)
@@ -15,6 +19,15 @@ export const ResizableCanvas = memo(() => {
     canvasRef.current = new Canvas(canvasElemRef.current)
 
   }, [divRef])
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      console.warn("Can't set color :(")
+      return;
+    }
+
+    canvasRef.current?.setColor(color)
+  }, [color])
 
   useResizeObserver(divRef, (w, h) => {
     if (!canvasRef.current) {
