@@ -1,0 +1,29 @@
+stages:
+  - build
+  - deploy
+
+image: node:latest
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  tags:
+    - pi4
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/*
+    untracked: false
+    expire_in: 1 days
+
+deploy:
+  stage: deploy
+  tags:
+    - hetzner
+  script:
+    - rm -rf /srv/nginx/wwwroot-fingerfarben/*
+    - cp -r dist/* /srv/nginx/wwwroot-fingerfarben/
