@@ -16,7 +16,10 @@ export const ResizableCanvas = memo(({ color }: Props) => {
       return;
     }
 
-    canvasRef.current = new Canvas(canvasElemRef.current)
+    const canvas = new Canvas(canvasElemRef.current)
+    canvasRef.current = canvas
+
+    return () => { canvas.destroy() }
 
   }, [divRef])
 

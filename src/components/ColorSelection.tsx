@@ -8,6 +8,7 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
 
   const colors = [
     { text: 'Rot', value: 'red' },
+    { text: 'Gelb', value: 'yellow' },
     { text: 'Grün', value: 'green' },
     { text: 'Blau', value: 'blue' },
     { text: 'Lila', value: '#6C3483' },
@@ -29,7 +30,7 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
   return (
     <div>
       {colors.map(color => (
-        <button key={color.value} style={{ backgroundColor: color.value, width: '80px', height: '80px', margin: '3px', border: '1px solid white' }} onClick={() => onSelect(color)}></button>
+        <button key={color.value} style={{ backgroundColor: color.value, width: '80px', height: '80px', margin: '3px', border: '1px solid white' }} onMouseDown={() => onSelect(color)}></button>
       ))}
     </div>
   )

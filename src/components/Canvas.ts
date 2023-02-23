@@ -1,4 +1,5 @@
 import { TouchEvent, MouseEvent } from 'react';
+import { Subscription } from 'rxjs';
 import { Command, commands$ } from '../domain/commands';
 
 export class Canvas {
@@ -9,11 +10,18 @@ export class Canvas {
   private touches: Map<number, { id: number; x: number; y: number }> = new Map();
   private color: string = 'red';
 
+  private subs: Subscription[] = [];
+
   constructor(private canvas: HTMLCanvasElement) {
     this.context = canvas.getContext('2d')!;
     console.debug('Initialized canvas');
 
-    commands$.subscribe((cmd) => this.handleCommand(cmd));
+    this.subs.push(commands$.subscribe((cmd) => this.handleCommand(cmd)));
+  }
+
+  destroy() {
+    this.subs.forEach((sub) => sub.unsubscribe());
+    this.subs = [];
   }
 
   setColor(color: string) {
@@ -118,8 +126,13 @@ export class Canvas {
   }
 
   private handleCommand(cmd: Command) {
+    // TODO: SpeechSynth service
     if (cmd.type === 'new') {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      const u = new SpeechSynthesisUtterance();
+      u.text = 'Neues Blatt';
+      u.lang = 'de';
+      window.speechSynthesis.speak(u);
     }
   }
 }
