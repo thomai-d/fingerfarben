@@ -17,7 +17,7 @@ export const ColorButton: React.FC<CircleProps> = ({
 }) => {
   const [random, setRandom] = useState(Math.random());
 
-  const numPoints = 30;
+  const numPoints = 25;
   const wobblyRadius = 5;
   const wobblyMulti = 8;
 
@@ -26,12 +26,14 @@ export const ColorButton: React.FC<CircleProps> = ({
   for (let i = 0; i < numPoints; i++) {
     const angle = (Math.PI * 2 * i) / numPoints;
     const add = Math.sin(angle * wobblyMulti * random) * wobblyRadius;
-    const x = Math.cos(angle) * (radius - wobblyRadius + add);
-    const y = Math.sin(angle) * (radius - wobblyRadius + add);
-    points.push(`${x},${y}`);
+    const add2 = Math.sin(angle * wobblyMulti * random * 2) * wobblyRadius / 2;
+    const x = Math.cos(angle) * (radius - wobblyRadius + add + add2);
+    const y = Math.sin(angle) * (radius - wobblyRadius + add + add2);
+    points.push(`L${x} ${y}`);
   }
 
-  const path = `M${points[0]} C${points.slice(1).join(' ')}`;
+  const path = `M${points[0].slice(1)} ${points.slice(1).join(' ')} Z`;
+  console.log(path)
 
   const onClick = (e: React.MouseEvent | React.TouchEvent) => {
     setRandom(Math.random())

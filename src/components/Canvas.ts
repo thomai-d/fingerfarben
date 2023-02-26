@@ -1,6 +1,7 @@
 import { TouchEvent, MouseEvent } from 'react';
 import { Subscription } from 'rxjs';
 import { Command, commands$ } from '../domain/commands';
+import { say } from '../services/speech';
 
 export class Canvas {
   private context: CanvasRenderingContext2D;
@@ -126,13 +127,9 @@ export class Canvas {
   }
 
   private handleCommand(cmd: Command) {
-    // TODO: SpeechSynth service
     if (cmd.type === 'new') {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      const u = new SpeechSynthesisUtterance();
-      u.text = 'Neues Blatt';
-      u.lang = 'de';
-      window.speechSynthesis.speak(u);
+      say('Neues Blatt');
     }
   }
 }

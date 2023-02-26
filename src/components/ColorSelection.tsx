@@ -1,3 +1,4 @@
+import { say } from '../services/speech'
 import { ColorButton } from './ColorButton'
 
 type Props = {
@@ -22,11 +23,7 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
 
   const onSelect = (color: Color) => {
     onSelectColor(color.value)
-
-    const u = new SpeechSynthesisUtterance()
-    u.text = color.text
-    u.lang = 'de'
-    window.speechSynthesis.speak(u)
+    say(color.text)
   }
 
   return (
