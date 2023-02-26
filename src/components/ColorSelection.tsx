@@ -1,3 +1,5 @@
+import { ColorButton } from './ColorButton'
+
 type Props = {
   onSelectColor: (color: string) => void
 }
@@ -30,7 +32,8 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
   return (
     <div>
       {colors.map(color => (
-        <button key={color.value} style={{ backgroundColor: color.value, width: '80px', height: '80px', margin: '3px', border: '1px solid white' }} onMouseDown={() => onSelect(color)}></button>
+        <ColorButton key={color.value} fillColor={color.value} radius={50} strokeWidth={2} strokeColor={color.value}
+          onSelect={() => onSelect(color)} />
       ))}
     </div>
   )
