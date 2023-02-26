@@ -47,7 +47,7 @@ export const ResizableCanvas = memo(({ color }: Props) => {
         ref={canvasElemRef}
         onMouseDown={e => canvasRef.current?.onMouseDown(e)}
         onMouseMove={e => canvasRef.current?.onMouseMove(e)}
-        onMouseUp={e => canvasRef.current?.onMouseUp(e)}
+        onMouseUp={e => canvasRef.current?.onMouseUp()}
         onTouchStart={e => canvasRef.current?.onTouchStart(e)}
         onTouchMove={e => canvasRef.current?.onTouchMove(e)}
         onTouchEnd={e => canvasRef.current?.onTouchEnd(e)}

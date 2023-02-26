@@ -3,15 +3,27 @@ import { Subscription } from 'rxjs';
 import { Command, commands$ } from '../domain/commands';
 import { say } from '../services/speech';
 
+type Point = {
+  x: number,
+  y: number
+}
+
+type PointWithId = Point & {
+  id: number
+}
+
 export class Canvas {
   private context: CanvasRenderingContext2D;
 
   private lastMouseEvent: MouseEvent | null = null;
 
-  private touches: Map<number, { id: number; x: number; y: number }> = new Map();
-  private color: string = 'red';
+  private touches: Map<number, PointWithId> = new Map();
 
   private subs: Subscription[] = [];
+
+  private color: string = 'red';
+
+  private drawRadius = 4;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.context = canvas.getContext('2d')!;
@@ -43,18 +55,18 @@ export class Canvas {
   onMouseDown = (event: MouseEvent) => {
     this.lastMouseEvent = event;
 
-    const point = this.toRelativeXY(event);
+    const point = this.mouseToXy(event);
     this.drawPoint(point.x, point.y);
   };
 
   onMouseMove = (event: MouseEvent) => {
     if (!this.lastMouseEvent) return;
 
-    this.drawLine(this.toRelativeXY(this.lastMouseEvent), this.toRelativeXY(event));
+    this.drawLine(this.mouseToXy(this.lastMouseEvent), this.mouseToXy(event));
     this.lastMouseEvent = event;
   };
 
-  onMouseUp = (event: MouseEvent) => {
+  onMouseUp = () => {
     this.lastMouseEvent = null;
   };
 
@@ -94,7 +106,7 @@ export class Canvas {
     });
   };
 
-  private drawLine = (start: { x: number; y: number }, end: { x: number; y: number }) => {
+  private drawLine = (start: Point, end: Point) => {
     this.context.lineWidth = 8;
     this.context.beginPath();
     this.context.moveTo(start.x, start.y);
@@ -106,13 +118,13 @@ export class Canvas {
   };
 
   private drawPoint(x: number, y: number) {
-    this.context.beginPath();
-    this.context.ellipse(x, y, 4, 4, 0, 0, 2 * Math.PI);
     this.context.fillStyle = this.color;
+    this.context.beginPath();
+    this.context.ellipse(x, y, this.drawRadius, this.drawRadius, 0, 0, 2 * Math.PI);
     this.context.fill();
   }
 
-  private toRelativeXY(e: { pageX: number; pageY: number }) {
+  private mouseToXy(e: MouseEvent) {
     return {
       x: e.pageX - this.canvas.offsetLeft,
       y: e.pageY - this.canvas.offsetTop,

@@ -1,0 +1,9 @@
+.button {
+  transform: rotate(0);
+  transition: all 0.5s;
+}
+
+.animate {
+  transform: rotate(360deg);
+  transition: all 0.5s;
+}

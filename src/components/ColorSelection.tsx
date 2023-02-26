@@ -1,5 +1,5 @@
 import { say } from '../services/speech'
-import { ColorButton } from './ColorButton'
+import { ColorButton } from './ColorButton/ColorButton'
 
 type Props = {
   onSelectColor: (color: string) => void
@@ -29,7 +29,7 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
   return (
     <>
       {colors.map(color => (
-        <ColorButton key={color.value} fillColor={color.value} radius={50} strokeWidth={2} strokeColor={color.value}
+        <ColorButton key={color.value} color={color.value} radius={50}
           onSelect={() => onSelect(color)} />
       ))}
     </>
