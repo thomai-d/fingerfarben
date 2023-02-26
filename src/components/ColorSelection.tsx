@@ -27,12 +27,12 @@ export const ColorSelection = ({ onSelectColor }: Props) => {
   }
 
   return (
-    <div>
+    <>
       {colors.map(color => (
         <ColorButton key={color.value} fillColor={color.value} radius={50} strokeWidth={2} strokeColor={color.value}
           onSelect={() => onSelect(color)} />
       ))}
-    </div>
+    </>
   )
 
 }

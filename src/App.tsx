@@ -9,11 +9,17 @@ export default () => {
   const [color, setColor] = useState('white')
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <ColorSelection onSelectColor={setColor} />
+      <div className="menu">
 
-        <FullScreenButton />
-        <button style={{ width: '80px', height: '80px', margin: '3px', border: '1px solid white' }} onClick={() => newPage()}>NEU</button>
+
+        <div className="container">
+          <ColorSelection onSelectColor={setColor} />
+        </div>
+
+        <div className="container">
+          <FullScreenButton />
+          <button style={{ width: '80px', height: '80px', margin: '3px', border: '1px solid white' }} onClick={() => newPage()}>NEU</button>
+        </div>
       </div>
 
       <ResizableCanvas color={color} />
