@@ -3,6 +3,7 @@ import { useResizeObserver } from "../hooks/useResizeObserver"
 import { LineFactory } from "./utilities/LineFactory"
 import { publishMessage } from '../domain/messageBus'
 import { MultiLayerCanvas } from './MultiLayerCanvas'
+import { DrawingCanvas } from '../domain/canvas/drawingCanvas'
 
 type Props = {
 }
@@ -10,7 +11,6 @@ type Props = {
 export const ResizableCanvas = memo(({ }: Props) => {
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<MultiLayerCanvas | null>(null)
 
   const lineFactory = useRef(new LineFactory())
 
@@ -21,14 +21,17 @@ export const ResizableCanvas = memo(({ }: Props) => {
     // Setup multi-layer-canvas
     const container = containerRef.current!
     const canvas = new MultiLayerCanvas(container)
-    canvasRef.current = canvas;
+    const drawing = new DrawingCanvas(canvas)
     
     // Setup line factory
     lineFactory.current.pointTranslateFn = p => ({ x: p.x - container.offsetLeft, y: p.y - container.offsetTop })
-    lineFactory.current.onEmitPoint = p => canvas.getLayer('layer1').drawPoint(p)
-    lineFactory.current.onEmitLine = (p, q) => canvas.getLayer('layer1').drawLine(p, q)
+    lineFactory.current.onEmitPoint = p => drawing.drawPoint(p)
+    lineFactory.current.onEmitLine = (p, q) => drawing.drawLine(p, q)
 
-    return () => { canvas.destroy() }
+    return () => {
+      canvas.destroy()
+      drawing.destroy()
+    }
 
   }, [containerRef])
 

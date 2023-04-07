@@ -2,13 +2,12 @@ import { Subscription } from 'rxjs';
 import { Command, commands$ } from '../domain/commands';
 import { say } from '../services/speech';
 import { Point } from './utilities/shapes';
+import { Drawable } from '../domain/canvas/drawable';
 
-export class Canvas {
+export class Canvas implements Drawable {
   private context: CanvasRenderingContext2D;
 
   private subs: Subscription[] = [];
-
-  private color: string = 'red';
 
   private drawRadius = 4;
 
@@ -22,10 +21,6 @@ export class Canvas {
   destroy() {
     this.subs.forEach((sub) => sub.unsubscribe());
     this.subs = [];
-  }
-
-  setColor(color: string) {
-    this.color = color;
   }
 
   resize(width: number, height: number) {
@@ -50,19 +45,19 @@ export class Canvas {
     this.context.fillStyle = 'white';
   }
 
-  drawLine = (start: Point, end: Point) => {
+  drawLine = (color: string, start: Point, end: Point) => {
     this.context.lineWidth = 8;
     this.context.beginPath();
     this.context.moveTo(start.x, start.y);
     this.context.lineTo(end.x, end.y);
-    this.context.strokeStyle = this.color;
+    this.context.strokeStyle = color;
     this.context.stroke();
 
-    this.drawPoint(end);
+    this.drawPoint(color, end);
   };
 
-  drawPoint({ x, y }: Point) {
-    this.context.fillStyle = this.color;
+  drawPoint(color: string, { x, y }: Point) {
+    this.context.fillStyle = color;
     this.context.beginPath();
     this.context.ellipse(x, y, this.drawRadius, this.drawRadius, 0, 0, 2 * Math.PI);
     this.context.fill();

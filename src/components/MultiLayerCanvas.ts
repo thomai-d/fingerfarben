@@ -1,8 +1,9 @@
 import { Subscription } from 'rxjs';
 import { Message, whenMessageReceived } from '../domain/messageBus';
 import { Canvas } from './Canvas';
+import { LayeredDrawable } from '../domain/canvas/layeredDrawable';
 
-export class MultiLayerCanvas {
+export class MultiLayerCanvas implements LayeredDrawable {
   private layers: Record<string, Canvas> = {};
   private subs: Subscription[] = [];
 
