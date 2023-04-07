@@ -48,6 +48,7 @@ export const ResizableCanvas = memo(({ color }: Props) => {
     // todo: make this a domain event
 
     commitedCanvasRef.current?.setColor(color)
+    stagingCanvasRef.current?.setColor(color)
   }, [color])
 
   useResizeObserver(divRef, (w, h) => {
