@@ -9,7 +9,7 @@ type Props = {
 
 export const ResizableCanvas = memo(({ color }: Props) => {
 
-  const divRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const canvasElementCommitedRef = useRef<HTMLCanvasElement>(null)
   const canvasElementStagingRef = useRef<HTMLCanvasElement>(null)
 
@@ -19,7 +19,7 @@ export const ResizableCanvas = memo(({ color }: Props) => {
   const stagingCanvasRef = useRef<Canvas | null>(null)
 
   useEffect(() => {
-    if (!divRef.current || !canvasElementCommitedRef.current || !canvasElementStagingRef.current) {
+    if (!containerRef.current || !canvasElementCommitedRef.current || !canvasElementStagingRef.current) {
       return;
     }
 
@@ -37,7 +37,7 @@ export const ResizableCanvas = memo(({ color }: Props) => {
 
     return () => { commitedCanvas.destroy() }
 
-  }, [divRef])
+  }, [containerRef])
 
   useEffect(() => {
     if (!commitedCanvasRef.current) {
@@ -51,7 +51,7 @@ export const ResizableCanvas = memo(({ color }: Props) => {
     stagingCanvasRef.current?.setColor(color)
   }, [color])
 
-  useResizeObserver(divRef, (w, h) => {
+  useResizeObserver(containerRef, (w, h) => {
     if (!commitedCanvasRef.current || !stagingCanvasRef.current) {
       console.warn("Can't resize canvas. It's not there...?!?!")
       return;
@@ -62,7 +62,23 @@ export const ResizableCanvas = memo(({ color }: Props) => {
   })
 
   return (
-    <div ref={divRef} style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
+    <div ref={containerRef} style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
+      onPointerDown={e => {
+        if (e.pointerType !== 'mouse') return
+        containerRef.current!.setPointerCapture(e.pointerId)
+        lineFactory.current.onMouseDown(e)
+      }}
+      onPointerMove={e => {
+        lineFactory.current.onMouseMove(e)
+      }}
+      onPointerUp={e => {
+        containerRef.current!.releasePointerCapture(e.pointerId)
+        lineFactory.current.onMouseUp()
+      }}
+
+      onTouchStart={e => lineFactory.current.onTouchStart(e)}
+      onTouchMove={e => lineFactory.current.onTouchMove(e)}
+      onTouchEnd={e => lineFactory.current.onTouchEnd(e)}
     >
       <canvas
         style={{ position: 'absolute' }}
@@ -72,12 +88,6 @@ export const ResizableCanvas = memo(({ color }: Props) => {
       <canvas
         style={{ position: 'absolute' }}
         ref={canvasElementStagingRef}
-        onMouseDown={e => lineFactory.current.onMouseDown(e)}
-        onMouseMove={e => lineFactory.current.onMouseMove(e)}
-        onMouseUp={e => lineFactory.current.onMouseUp()}
-        onTouchStart={e => lineFactory.current.onTouchStart(e)}
-        onTouchMove={e => lineFactory.current.onTouchMove(e)}
-        onTouchEnd={e => lineFactory.current.onTouchEnd(e)}
       />
 
     </div>
