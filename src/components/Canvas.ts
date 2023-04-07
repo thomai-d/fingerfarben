@@ -3,7 +3,6 @@ import { Command, commands$ } from '../domain/commands';
 import { say } from '../services/speech';
 import { Point } from './utilities/shapes';
 
-
 export class Canvas {
   private context: CanvasRenderingContext2D;
 
@@ -32,10 +31,21 @@ export class Canvas {
   resize(width: number, height: number) {
     console.debug(`Resizing canvas to ${width}x${height}`);
 
-    let temp = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    const copyNeeded =
+      this.canvas.width && this.canvas.height && (this.canvas.width < width || this.canvas.height < height);
+
+    let imageData: ImageData | null = null;
+
+    if (copyNeeded) {
+      imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     this.canvas.width = width;
     this.canvas.height = height;
-    this.context.putImageData(temp, 0, 0);
+
+    if (imageData) {
+      this.context.putImageData(imageData, 0, 0);
+    }
 
     this.context.fillStyle = 'white';
   }
@@ -56,6 +66,10 @@ export class Canvas {
     this.context.beginPath();
     this.context.ellipse(x, y, this.drawRadius, this.drawRadius, 0, 0, 2 * Math.PI);
     this.context.fill();
+  }
+
+  getCanvasRef() {
+    return this.canvas;
   }
 
   private handleCommand(cmd: Command) {

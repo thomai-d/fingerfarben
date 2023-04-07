@@ -1,19 +1,18 @@
-import { useState } from 'react'
 import './App.css'
 import { ColorSelection } from './components/ColorSelection'
 import { FullScreenButton } from './components/FullScreenButton'
 import { ResizableCanvas } from './components/ResizableCanvas'
 import { newPage } from './domain/commands'
+import { publishMessage } from './domain/messageBus'
 
 export default () => {
-  const [color, setColor] = useState('white')
   return (
     <>
       <div className="menu">
 
 
         <div className="container">
-          <ColorSelection onSelectColor={setColor} />
+          <ColorSelection onSelectColor={color => publishMessage({ type: 'color-changed', color })} />
         </div>
 
         <div className="container">
@@ -22,7 +21,7 @@ export default () => {
         </div>
       </div>
 
-      <ResizableCanvas color={color} />
+      <ResizableCanvas />
     </>
   )
 }
