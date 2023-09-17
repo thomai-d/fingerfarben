@@ -1,9 +1,9 @@
 import './app.css'
-import { ColorSelection } from './components/color-selection'
-import { FullScreenButton } from './components/full-screen-button'
-import { ResizableCanvas } from './components/resizable-canvas'
-import { newPage } from './domain/commands'
-import { publishMessage } from './domain/message-bus'
+import { ColorSelection } from './apps/paint/components/color-selection'
+import { FullScreenButton } from './apps/paint/components/full-screen-button'
+import { ResizableCanvas } from './apps/paint/components/resizable-canvas'
+import { newPage } from './apps/paint/domain/commands'
+import { publishMessage } from './apps/paint/domain/message-bus'
 
 export default () => {
   return (

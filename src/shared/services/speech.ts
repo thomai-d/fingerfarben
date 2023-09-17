@@ -1,4 +1,4 @@
-import { getConfig } from '../domain/config/config';
+import { getConfig } from '../../config';
 
 export const say = (text: string) => {
   if (!getConfig('enableSound')) return;

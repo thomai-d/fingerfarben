@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { Command, commands$ } from '../domain/commands';
-import { say } from '../services/speech';
+import { say } from '../../../shared/services/speech';
 import { Point } from './utilities/shapes';
 import { Drawable } from '../domain/canvas/drawable';
 
