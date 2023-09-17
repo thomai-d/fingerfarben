@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef } from "react"
-import { useResizeObserver } from "../hooks/useResizeObserver"
-import { LineFactory } from "./utilities/LineFactory"
-import { publishMessage } from '../domain/messageBus'
-import { MultiLayerCanvas } from './MultiLayerCanvas'
-import { DrawingCanvas } from '../domain/canvas/drawingCanvas'
+import { useResizeObserver } from "../hooks/use-resize-observer"
+import { LineFactory } from "./utilities/line-factory"
+import { publishMessage } from '../domain/message-bus'
+import { MultiLayerCanvas } from './multi-layer-canvas'
+import { DrawingCanvas } from '../domain/canvas/drawing-canvas'
 
 type Props = {
 }

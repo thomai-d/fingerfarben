@@ -1,9 +1,9 @@
-import './App.css'
-import { ColorSelection } from './components/ColorSelection'
-import { FullScreenButton } from './components/FullScreenButton'
-import { ResizableCanvas } from './components/ResizableCanvas'
+import './app.css'
+import { ColorSelection } from './components/color-selection'
+import { FullScreenButton } from './components/full-screen-button'
+import { ResizableCanvas } from './components/resizable-canvas'
 import { newPage } from './domain/commands'
-import { publishMessage } from './domain/messageBus'
+import { publishMessage } from './domain/message-bus'
 
 export default () => {
   return (

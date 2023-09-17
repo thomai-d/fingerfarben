@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Point } from '../../components/utilities/shapes';
-import { LayeredDrawable } from './layeredDrawable';
-import { Message, whenMessageReceived } from '../messageBus';
+import { LayeredDrawable } from './layered-drawable';
+import { Message, whenMessageReceived } from '../message-bus';
 
 export class DrawingCanvas {
   private subs: Subscription[] = [];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import css from './ColorButton.module.css'
+import css from './color-button.module.css'
 
 interface Props {
   radius: number;

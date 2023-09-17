@@ -1,5 +1,5 @@
 import { say } from '../services/speech'
-import { ColorButton } from './ColorButton/ColorButton'
+import { ColorButton } from './color-button/color-button.component'
 
 type Props = {
   onSelectColor: (color: string) => void
