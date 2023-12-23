@@ -12,11 +12,12 @@ build:
   tags:
     - pi4
   script:
+    - cd src
     - npm ci
     - npm run build
   artifacts:
     paths:
-      - dist/*
+      - src/dist/*
     untracked: false
     expire_in: 1 days
 
@@ -25,5 +26,6 @@ deploy:
   tags:
     - hetzner
   script:
+    - cd src
     - rm -rf /srv/nginx/wwwroot-fingerfarben/*
     - cp -r dist/* /srv/nginx/wwwroot-fingerfarben/
